@@ -6,6 +6,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <map>
+#include <math.h>
 using namespace std;
 
 struct Point {
@@ -29,18 +30,7 @@ private:
 	const static int MAX = 0x7fffffff;
 	const static int MIN = 0x80000000;
 	const static int max_level = 3;
-	const static int turn[4][2];
 	const static int direction[4][2];
-	
-	const static int FIVE = 1000000;
-	const static int FOUR = 100000;
-	const static int THREE = 10000;
-	const static int BLOCKFOUR = 3000;
-	const static int BROKENFOUR = 3000;
-	const static int BROKENTHREE = 1000;
-	const static int TWO = 100;
-	const static int ONE = 10;
-	
 	int dimension, chain_len, time_limit, mode;
 	bool first;
 	vector<vector<char> >board;
