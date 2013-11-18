@@ -5,12 +5,17 @@
 #include <vector>
 #include <time.h>
 #include <stdlib.h>
+#include <map>
 using namespace std;
 
 struct Point {
 	int x, y;
 	Point() {}
 	Point(int x_, int y_) : x(x_), y(y_) {}
+	bool operator < (const Point &b) const
+	{
+		return x == b.x ? y < b.y : x < b.x;
+	}
 };
 
 /**
@@ -20,16 +25,24 @@ struct Point {
  */
 class GomokuAgent {
 private:
+	typedef map<Point, int> PointMap;
+	const static int MAX = 0x7fffffff;
+	const static int MIN = 0x80000000;
+	const static int max_level = 5;
+	const static int turn[4][2];
 	int dimension, chain_len, time_limit, mode;
 	bool first;
 	vector<vector<char> >board;
 	Point input_action();
 	Point random_action();
-	//Point self_action();
+	Point self_action();
 	bool is_first_player(char c);
 	bool is_empty(char c);
 	void my_move(Point &move);
 	void op_move(Point &move);
+	bool visited(PointMap &pmap, int x, int y);
+	int minimax(PointMap pmap, int alpha, int beta, bool max_layer, int level);
+	int eval(PointMap &pmap);
 public:
 	GomokuAgent(int d, int c, int t, int m, bool f);
 	Point my_action();
@@ -44,7 +57,6 @@ private:
 	vector<vector<char> >board;
 	bool is_terminate(Point p);
 	bool is_draw();
-	bool is_first_player(char c);
 	bool is_empty(char c);
 	int move(bool first, Point &p, int &winner);
 	int win(int &winner, bool first);

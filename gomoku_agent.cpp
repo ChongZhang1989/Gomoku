@@ -88,7 +88,7 @@ Point GomokuAgent::my_action()
 			ret = random_action();
 			break;
 		case 3:
-			//ret = self_action();
+			ret = self_action();
 			break;
 	}
 	my_move(ret);

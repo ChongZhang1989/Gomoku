@@ -81,14 +81,6 @@ int GomokuEnvironment::move(bool first, Point &p, int &winner)
 }
 
 /**
- * judge whether this point is player1's chess piece
- */
-bool GomokuEnvironment::is_first_player(char c)
-{
-	return c == 'O' ? true : false;
-}
-
-/**
  * judge whether this point is empty
  */
 bool GomokuEnvironment::is_empty(char c)
