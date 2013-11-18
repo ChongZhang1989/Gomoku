@@ -71,72 +71,17 @@ int GomokuAgent::minimax(PointMap pmap, int alpha, int beta, bool max_layer, int
 		for (int j = 0; j < dimension; ++j) {
 			if (!visited(pmap, i, j)) {
 				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
-				if (ret > beta || ret < alpha) return ret;
-				else tmp = max_layer ? max(tmp, ret) : min(tmp, ret);
+				if (max_layer) {
+					alpha = max(ret, alpha);
+				} else {
+					beta = min(beta, ret);
+					if (alpha > beta) return beta;
+				}
 				pmap.erase(Point(i, j));
 			}
 		}
 	}
-	return tmp;
-	/*
-	int startx = (dimension - 1) / 2;
-	int starty = (dimension - 1) / 2;
-	int x, y;
-	int len = dimension % 2 == 0 ? 2 : 1;
-	for (; len <= dimension; len += 2) {
-		x = --startx;
-		y = --starty;
-		int d = 0;
-		for (int i = 0; i < len; ++i) {
-			if (!visited(pmap, x, y)) {
-				pmap[Point(x, y)] = first;
-				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
-				if (ret > beta || ret < alpha) return ret;
-				else tmp = max_layer ? max(tmp, ret) : min(tmp, ret);
-				pmap.erase(Point(x, y));
-			}
-			x += turn[d][0];
-			y += turn[d][1];
-		}
-		d = 1;
-		for (int i = 0; i < len - 1; ++i) {
-			x += turn[d][0];
-			y += turn[d][1];
-			if (!visited(pmap, x, y)) {
-				pmap[Point(x, y)] = first;
-				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
-				if (ret > beta || ret < alpha) return ret;
-				else tmp = max_layer ? max(tmp, ret) : min(tmp, ret);
-				pmap.erase(Point(x, y));
-			}
-		}
-		d = 2;
-		for (int i = 0; i < len - 1; ++i) {
-			x += turn[d][0];
-			y += turn[d][1];
-			if (!visited(pmap, x, y)) {
-				pmap[Point(x, y)] = first;
-				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
-				if (ret > beta || ret < alpha) return ret;
-				else tmp = max_layer ? max(tmp, ret) : min(tmp, ret);
-				pmap.erase(Point(x, y));
-			}
-		}
-		d = 3;
-		for (int i = 0; i < len - 2; ++i) {
-			x += turn[d][0];
-			y += turn[d][1];
-			if (!visited(pmap, x, y)) {
-				pmap[Point(x, y)] = first;
-				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
-				if (ret > beta || ret < alpha) return ret;
-				else tmp = max_layer ? max(tmp, ret) : min(tmp, ret);
-				pmap.erase(Point(x, y));
-			}
-		}
-	}
-	return tmp;
-	*/
+	return max_layer ? alpha : beta;
 }
 
 Point GomokuAgent::self_action()
@@ -150,9 +95,7 @@ Point GomokuAgent::self_action()
 			if (!is_empty(board[i][j])) continue;
 			pmap[Point(i, j)] = first;
 			int ret = minimax(pmap, alpha, beta, false, 1);
-			if (ret < alpha) {
-				break;
-			} else {
+			if (ret > alpha) {
 				alpha = ret;
 				p.x = i;
 				p.y = j;
