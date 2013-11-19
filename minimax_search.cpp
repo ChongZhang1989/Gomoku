@@ -2,6 +2,7 @@
 
 const int GomokuAgent::direction[4][2] = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
 
+/*
 int GomokuAgent::eval(PointMap &pmap)
 {
 	vector<char>s(chain_len + 1);
@@ -76,6 +77,95 @@ int GomokuAgent::eval(PointMap &pmap)
 	}
 	return value;
 }
+*/
+
+int GomokuAgent::eval(PointMap &pmap)
+{
+	int value = 0;
+	for (PointMap::iterator it = pmap.begin(); it != pmap.end(); ++it) {
+		Point p = it->first;
+		bool flg = it->second;
+		for (int i = 0; i < 4; ++i) {	
+			int sum = 0;
+			int x = p.x, y = p.y;
+			int len = 0;
+			int dup = 1;
+			int empty_space1 = 0;
+			int empty_space2 = 0;
+			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x += direction[i][0], y += direction[i][1]) {
+				PointMap::iterator tmp = pmap.find(Point(x, y));
+				if (tmp != pmap.end() && tmp->second == flg) {
+					dup++;
+					continue;
+				}
+				if (board[x][y] != (flg ? 'O' : 'X'))
+					break;
+			}
+			len += max(abs(x - p.x), abs(y - p.y));
+			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x += direction[i][0], y += direction[i][1]) {
+				PointMap::iterator tmp = pmap.find(Point(x, y));
+				if (tmp != pmap.end() && tmp->second != flg) {
+					break;
+				}
+				if (is_empty(board[x][y])) empty_space1++;
+				else if (board[x][y] == (flg ? 'O' : 'X')) empty_space1 += 1;
+				else break;
+			}
+			x = p.x - direction[i][0];
+			y = p.y - direction[i][1];
+			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x -= direction[i][0], y -= direction[i][1]) {
+				PointMap::iterator tmp = pmap.find(Point(x, y));
+				if (tmp != pmap.end() && tmp->second == flg) {
+					dup++;
+					continue;
+				}
+				if (board[x][y] != (flg ? 'O' : 'X'))
+					break;
+			}
+			len += max(abs(x - p.x + direction[i][0]), abs(y - p.y + direction[i][1]));
+			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x -= direction[i][0], y -= direction[i][1]) {
+				PointMap::iterator tmp = pmap.find(Point(x, y));
+				if (tmp != pmap.end() && tmp->second != flg) {
+					break;
+				}
+				if (is_empty(board[x][y])) empty_space2++;
+				else if (board[x][y] == (flg ? 'O' : 'X')) empty_space2 += 1;
+				else break;
+			}
+			//Not enough space, useless move
+			if (len + empty_space1 + empty_space2 < chain_len) {
+				continue;
+			}
+			
+			if (len >= chain_len) {
+				//sum = (int)(pow(10, len));
+				return first == flg ? MAX : MIN;
+			} else if (empty_space1 && empty_space2) {
+				if (len >= chain_len - 2 && first != flg)
+					return MIN;
+				sum = (int)(pow(10, len));
+			} else {
+				sum = (int) (pow(10, len)) / 30;
+			}
+			sum += empty_space1 * empty_space2;
+			value += first == flg ? sum : -sum;
+			/*
+			if (len == chain_len) {
+				value += first == flg ? 100000000 : -100000000;
+			}
+			if (empty_space1 && empty_space2 && len == chain_len - 1) {
+				value += first == flg ? 10000000 : -10000000;
+			}
+			if (empty_space1 && empty_space2 && len == chain_len - 2) {
+				value += first == flg ? 1000000 : -1000000;
+			}
+			sum += ((int)pow(10, len))* (int)(log(empty_space1 * empty_space2 + 1) * 10) / dup;
+			value += first == flg ? sum : -sum;
+			*/
+		}
+	}
+	return value;
+}
 
 bool GomokuAgent::visited(PointMap &pmap, int x, int y)
 {
@@ -87,9 +177,18 @@ bool GomokuAgent::visited(PointMap &pmap, int x, int y)
 int GomokuAgent::minimax(PointMap pmap, int alpha, int beta, bool max_layer, int level)
 {
 	if (level == max_level) {
-		return eval(pmap);
+		PointMap rec = pmap;
+		for (int i = 0; i < dimension; ++i) {
+			for (int j = 0; j < dimension; ++j) {
+				if (board[i][j] == 'O') {
+					rec[Point(i, j)] = true;
+				} else if (board[i][j] == 'X'){
+					rec[Point(i, j)] = false;
+				}
+			}
+		}
+		return eval(rec);
 	}
-	int tmp = max_layer ? MIN : MAX;
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
 			if (!visited(pmap, i, j)) {
@@ -97,11 +196,10 @@ int GomokuAgent::minimax(PointMap pmap, int alpha, int beta, bool max_layer, int
 				int ret = minimax(pmap, alpha, beta, !max_layer, level + 1);
 				if (max_layer) {
 					alpha = max(ret, alpha);
+					if (alpha >= beta) return alpha;
 				} else {
-					if (ret > beta || ret < alpha) {
-						return ret;
-					}
 					beta = min(beta, ret);
+					if (alpha >= beta) return beta;
 				}
 				pmap.erase(Point(i, j));
 			}

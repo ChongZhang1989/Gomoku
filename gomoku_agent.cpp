@@ -67,6 +67,7 @@ bool GomokuAgent::is_empty(char c)
 void GomokuAgent::my_move(Point &move)
 {
 	board[move.x][move.y] = first ? 'O' : 'X';
+	rec[Point(move.x, move.y)] = first;
 }
 
 /**
@@ -75,6 +76,7 @@ void GomokuAgent::my_move(Point &move)
 void GomokuAgent::op_move(Point &move)
 {
 	board[move.x][move.y] = first ? 'X' : 'O';
+	rec[Point(move.x, move.y)] = !first;
 }
 
 Point GomokuAgent::my_action()
