@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <map>
 #include <math.h>
+#include <tr1/unordered_map>
 using namespace std;
 
 struct Point {
@@ -26,9 +27,24 @@ struct Point {
  */
 class GomokuAgent {
 private:
-	typedef map<Point, int> PointMap;
+	class PointHash {
+	public:
+		size_t operator () (const Point &a) const
+		{
+			return (a.x << 1) ^ (a.y);
+		}
+	};
+	class PointEqual {
+	public:
+		bool operator () (const Point &a, const Point &b) const
+		{
+			return a.x == b.x && a.y == b.y;
+		}
+	};
+	typedef tr1::unordered_map<Point, int, PointHash, PointEqual> PointMap;
+	//typedef map<Point, int> PointMap;
 	const static int MAX = 0x7fffffff;
-	const static int MIN = 0x80000000;
+	const static int MIN = -0x7fffffff;
 	const static int max_level = 3;
 	const static int direction[4][2];
 	int dimension, chain_len, time_limit, mode;
@@ -45,6 +61,7 @@ private:
 	bool visited(PointMap &pmap, int x, int y);
 	int minimax(PointMap pmap, int alpha, int beta, bool max_layer, int level);
 	int eval(PointMap &pmap);
+	bool is_terminal_state(PointMap &pmap, int x0, int y0, bool flg);
 public:
 	GomokuAgent(int d, int c, int t, int m, bool f);
 	Point my_action();

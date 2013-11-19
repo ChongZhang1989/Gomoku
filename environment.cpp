@@ -36,9 +36,15 @@ bool GomokuEnvironment::is_terminate(Point p)
 
 void GomokuEnvironment::show_board()
 {
+	printf(" ");
 	for (int i = 0; i < dimension; ++i) {
+		printf(" %2d", i);
+	}
+	puts("");
+	for (int i = 0; i < dimension; ++i) {
+		printf("%2d", i);
 		for (int j = 0; j < dimension; ++j) {
-			printf("%c", board[i][j]);
+			printf(" %c ", board[i][j]);
 		}
 		puts("");
 	}
