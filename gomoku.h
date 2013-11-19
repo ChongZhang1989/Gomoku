@@ -29,7 +29,7 @@ private:
 	typedef map<Point, int> PointMap;
 	const static int MAX = 0x7fffffff;
 	const static int MIN = 0x80000000;
-	const static int max_level = 3;
+	const static int max_level = 4;
 	const static int direction[4][2];
 	int dimension, chain_len, time_limit, mode;
 	bool first;

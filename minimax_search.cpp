@@ -68,7 +68,9 @@ int GomokuAgent::eval(PointMap &pmap)
 				int empty_side = 1;
 				if (is_empty(s[0])) empty_side++;
 				if (is_empty(s[chain_len])) empty_side++;
-				value += empty_side * ((int)(pow(10, my_pieces)) * my_consecutive - ((int)(pow(10, op_pieces))) * op_consecutive);
+				//int t = empty_side * ((int)(pow(10, my_pieces)) * my_consecutive - ((int)(pow(10, op_pieces))) * op_consecutive);
+				int t = empty_side * ((int)(pow(10, my_consecutive)) - ((int)(pow(10, op_consecutive))));
+				value += t;
 			}
 		}
 	}
@@ -96,8 +98,10 @@ int GomokuAgent::minimax(PointMap pmap, int alpha, int beta, bool max_layer, int
 				if (max_layer) {
 					alpha = max(ret, alpha);
 				} else {
+					if (ret > beta || ret < alpha) {
+						return ret;
+					}
 					beta = min(beta, ret);
-					if (alpha > beta) return beta;
 				}
 				pmap.erase(Point(i, j));
 			}
