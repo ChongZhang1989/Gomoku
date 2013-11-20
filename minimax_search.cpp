@@ -116,6 +116,19 @@ bool GomokuAgent::is_terminal_state(PointMap &pmap, int x0, int y0, bool flg)
 	return false;
 }
 
+bool GomokuAgent::is_prune(PointMap &pmap, int x0, int y0)
+{
+	int level = 1;
+	for (int i = x0 - level; i <= x0 + level; ++i) {
+		for (int j = y0 - level; j <= y0 + level; ++j) {
+			if (i < 0 || j < 0 || i >= dimension || j >= dimension) continue;
+			if (!is_empty(board[i][j])) return false;
+			if (pmap.count(Point(i, j))) return false;
+		}
+	}
+	return true;
+}
+
 long long GomokuAgent::minimax(PointMap pmap, long long alpha, long long beta, bool max_layer, int level)
 {
 	if (level == max_level) {
@@ -129,6 +142,7 @@ long long GomokuAgent::minimax(PointMap pmap, long long alpha, long long beta, b
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
 			if (!visited(pmap, i, j)) {
+				if (is_prune(pmap, i, j)) continue;
 				pmap[Point(i, j)] = max_layer ? first : !first;
 				if (is_terminal_state(pmap, i, j, max_layer ? first : !first)) {
 					return max_layer ? MAX : MIN;
@@ -162,7 +176,7 @@ Point GomokuAgent::self_action()
 				return Point(i, j);
 			}
 			long long ret = minimax(pmap, alpha, beta, false, 1);
-			printf("(%d %d) : %lld\n", i, j, ret);
+			//printf("(%d %d) : %lld\n", i, j, ret);
 			if (ret > alpha) {
 				alpha = ret;
 				p.x = i;

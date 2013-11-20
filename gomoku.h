@@ -62,6 +62,7 @@ private:
 	long long minimax(PointMap pmap, long long alpha, long long beta, bool max_layer, int level);
 	long long eval(PointMap &pmap);
 	bool is_terminal_state(PointMap &pmap, int x0, int y0, bool flg);
+	bool is_prune(PointMap &pmap, int x0, int y0);
 public:
 	GomokuAgent(int d, int c, int t, int m, bool f);
 	Point my_action();
