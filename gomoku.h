@@ -43,9 +43,9 @@ private:
 	};
 	typedef tr1::unordered_map<Point, int, PointHash, PointEqual> PointMap;
 	//typedef map<Point, int> PointMap;
-	const static int MAX = 0x7fffffff;
-	const static int MIN = -0x7fffffff;
-	const static int max_level = 3;
+	const static long long MAX = 0x7ffffffffffffff;
+	const static long long MIN = -0x7ffffffffffffff;
+	const static int max_level = 2;
 	const static int direction[4][2];
 	int dimension, chain_len, time_limit, mode;
 	bool first;
@@ -59,8 +59,8 @@ private:
 	void my_move(Point &move);
 	void op_move(Point &move);
 	bool visited(PointMap &pmap, int x, int y);
-	int minimax(PointMap pmap, int alpha, int beta, bool max_layer, int level);
-	int eval(PointMap &pmap);
+	long long minimax(PointMap pmap, long long alpha, long long beta, bool max_layer, int level);
+	long long eval(PointMap &pmap);
 	bool is_terminal_state(PointMap &pmap, int x0, int y0, bool flg);
 public:
 	GomokuAgent(int d, int c, int t, int m, bool f);
