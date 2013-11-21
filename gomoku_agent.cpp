@@ -1,11 +1,12 @@
 #include "gomoku.h"
-GomokuAgent::GomokuAgent(int d, int c, int t, int m, bool f)
+GomokuAgent::GomokuAgent(int d, int c, double t, int m, bool f)
 {
 	dimension = d;
 	chain_len = c;
 	time_limit = t;
 	mode = m;
 	first = f;
+	threshold = 0.1;
 	board.assign(d, vector<char>(d, '.'));
 }
 

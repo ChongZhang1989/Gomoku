@@ -59,20 +59,28 @@ long long GomokuAgent::eval(PointMap &pmap)
 			if (len + empty_space1 + empty_space2 < chain_len) {
 				continue;
 			}
-			
+			/*
 			if (len >= chain_len) {
 				//sum = (int)(pow(100.0, len));
 				return first == flg ? MAX : MIN; //need to be modified
 			} else if (empty_space1 && empty_space2) {
 				if (len >= chain_len - 1) {
-					return MAX;
+					return first == flg ? MAX / 10 : MIN / 10;
+				}
+				if (len >= chain_len - 2) {
+					return first == flg ? MAX / 100 : MIN / 100;
 				}
 				sum = (long long)(pow(100.0, len));
 			} else {
 				sum = (long long) (pow(100.0, len)) / 300;
 			}
-			sum += empty_space1 * empty_space2;
-			//sum /= len;
+			*/
+			if (empty_space1 && empty_space2) {
+				sum = (long long)(pow(100.0, len));
+			} else {
+				sum = (long long) (pow(100.0, len)) / 300;
+			}
+			sum += empty_space1 + empty_space2;
 			value += first == flg ? sum : -sum;
 		}
 	}
@@ -164,12 +172,16 @@ long long GomokuAgent::minimax(PointMap pmap, long long alpha, long long beta, b
 
 Point GomokuAgent::self_action()
 {
+	int t1 = clock();
 	PointMap pmap;
 	long long alpha = MIN - 1;
 	long long beta = MAX + 1;
 	Point p(-1, -1);
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
+			double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
+			if (time_limit - runtime < threshold)
+				return p;
 			if (!is_empty(board[i][j])) continue;
 			pmap[Point(i, j)] = first;
 			if (is_terminal_state(pmap, i, j, first)) {
@@ -185,6 +197,8 @@ Point GomokuAgent::self_action()
 			pmap.erase(Point(i, j));
 		}
 	}
+	double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
+	cout<<"Runtime: "<<runtime<<"s"<<endl;
 	cout<<p.x<<" "<<p.y<<endl;
 	return p;
 }

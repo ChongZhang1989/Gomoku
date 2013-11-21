@@ -47,7 +47,9 @@ private:
 	const static long long MIN = -0x7ffffffffffffff;
 	const static int max_level = 3;
 	const static int direction[4][2];
-	int dimension, chain_len, time_limit, mode;
+	double threshold;
+	int dimension, chain_len, mode;
+	double time_limit;
 	bool first;
 	PointMap rec;
 	vector<vector<char> >board;
@@ -64,7 +66,7 @@ private:
 	bool is_terminal_state(PointMap &pmap, int x0, int y0, bool flg);
 	bool is_prune(PointMap &pmap, int x0, int y0);
 public:
-	GomokuAgent(int d, int c, int t, int m, bool f);
+	GomokuAgent(int d, int c, double t, int m, bool f);
 	Point my_action();
 	void op_action(Point &p);
 };
