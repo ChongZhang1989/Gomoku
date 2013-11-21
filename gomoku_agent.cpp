@@ -51,7 +51,7 @@ Point GomokuAgent::random_action()
  */
 bool GomokuAgent::is_first_player(char c)
 {
-	return c == 'O' ? true : false;
+	return c == 'X' ? true : false;
 }
 
 /**
@@ -67,7 +67,7 @@ bool GomokuAgent::is_empty(char c)
  */
 void GomokuAgent::my_move(Point &move)
 {
-	board[move.x][move.y] = first ? 'O' : 'X';
+	board[move.x][move.y] = first ? 'X' : 'O';
 	rec[Point(move.x, move.y)] = first;
 }
 
@@ -76,7 +76,7 @@ void GomokuAgent::my_move(Point &move)
  */
 void GomokuAgent::op_move(Point &move)
 {
-	board[move.x][move.y] = first ? 'X' : 'O';
+	board[move.x][move.y] = first ? 'O' : 'X';
 	rec[Point(move.x, move.y)] = !first;
 }
 

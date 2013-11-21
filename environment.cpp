@@ -82,7 +82,7 @@ int GomokuEnvironment::move(bool first, Point &p, int &winner)
 		winner = first ? 2 : 1;
 		return 0;
 	}
-	board[p.x][p.y] = first ? 'O' : 'X';
+	board[p.x][p.y] = first ? 'X' : 'O';
 	return 1;
 }
 
@@ -105,7 +105,7 @@ int GomokuEnvironment::win(int &winner, bool first)
 				cnt = 0;
 				while (cnt < chain_len) {
 					if (x < 0 || y < 0 || x >= dimension || y >= dimension || 
-						board[x][y] != (first ? 'O' : 'X')) {
+						board[x][y] != (first ? 'X' : 'O')) {
 						break;	
 					}
 					++cnt;

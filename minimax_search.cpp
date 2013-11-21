@@ -21,7 +21,7 @@ long long GomokuAgent::eval(PointMap &pmap)
 					dup++;
 					continue;
 				}
-				if (board[x][y] != (flg ? 'O' : 'X'))
+				if (board[x][y] != (flg ? 'X' : 'O'))
 					break;
 			}
 			len += max(abs(x - p.x), abs(y - p.y));
@@ -31,7 +31,7 @@ long long GomokuAgent::eval(PointMap &pmap)
 					break;
 				}
 				if (is_empty(board[x][y])) empty_space1++;
-				else if (board[x][y] == (flg ? 'O' : 'X')) empty_space1 += 1;
+				else if (board[x][y] == (flg ? 'X' : 'O')) empty_space1 += 1;
 				else break;
 			}
 			x = p.x - direction[i][0];
@@ -42,7 +42,7 @@ long long GomokuAgent::eval(PointMap &pmap)
 					dup++;
 					continue;
 				}
-				if (board[x][y] != (flg ? 'O' : 'X'))
+				if (board[x][y] != (flg ? 'X' : 'O'))
 					break;
 			}
 			len += max(abs(x - p.x + direction[i][0]), abs(y - p.y + direction[i][1]));
@@ -52,14 +52,14 @@ long long GomokuAgent::eval(PointMap &pmap)
 					break;
 				}
 				if (is_empty(board[x][y])) empty_space2++;
-				else if (board[x][y] == (flg ? 'O' : 'X')) empty_space2 += 1;
+				else if (board[x][y] == (flg ? 'X' : 'O')) empty_space2 += 1;
 				else break;
 			}
 			//Not enough space, useless move
 			if (len + empty_space1 + empty_space2 < chain_len) {
 				continue;
 			}
-			/*
+			
 			if (len >= chain_len) {
 				//sum = (int)(pow(100.0, len));
 				return first == flg ? MAX : MIN; //need to be modified
@@ -67,19 +67,18 @@ long long GomokuAgent::eval(PointMap &pmap)
 				if (len >= chain_len - 1) {
 					return first == flg ? MAX / 10 : MIN / 10;
 				}
-				if (len >= chain_len - 2) {
-					return first == flg ? MAX / 100 : MIN / 100;
-				}
 				sum = (long long)(pow(100.0, len));
 			} else {
 				sum = (long long) (pow(100.0, len)) / 300;
 			}
-			*/
+			
+			/*
 			if (empty_space1 && empty_space2) {
 				sum = (long long)(pow(100.0, len));
 			} else {
 				sum = (long long) (pow(100.0, len)) / 300;
 			}
+			*/
 			sum += empty_space1 + empty_space2;
 			value += first == flg ? sum : -sum;
 		}
@@ -103,7 +102,7 @@ bool GomokuAgent::is_terminal_state(PointMap &pmap, int x0, int y0, bool flg)
 			PointMap::iterator tmp = pmap.find(Point(x, y));
 			if (tmp != pmap.end() && tmp->second == flg)
 				continue;
-			if (board[x][y] != (flg ? 'O' : 'X'))
+			if (board[x][y] != (flg ? 'X' : 'O'))
 				break;
 		}
 		len += max(abs(x - x0), abs(y - y0));
@@ -113,7 +112,7 @@ bool GomokuAgent::is_terminal_state(PointMap &pmap, int x0, int y0, bool flg)
 			PointMap::iterator tmp = pmap.find(Point(x, y));
 			if (tmp != pmap.end() && tmp->second == flg)
 				continue;
-			if (board[x][y] != (flg ? 'O' : 'X'))
+			if (board[x][y] != (flg ? 'X' : 'O'))
 				break;
 		}
 		len += max(abs(x0 - direction[i][0] - x), abs(y0 - direction[i][1] - y));
