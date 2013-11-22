@@ -173,26 +173,32 @@ Point GomokuAgent::self_action()
 {
 	int t1 = clock();
 	PointMap pmap;
-	long long alpha = MIN - 1;
+	long long alpha = MIN - 100;
 	long long beta = MAX + 1;
 	Point p(-1, -1);
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
 			double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
-			if (time_limit - runtime < threshold)
+			if (time_limit - runtime < threshold) {
+				max_level--;
+				printf("Max level changed from %d to %d\n", max_level + 1, max_level);
+				cout<<"Runtime: "<<runtime<<"s"<<endl;
 				return p;
+			}
 			if (!is_empty(board[i][j])) continue;
 			pmap[Point(i, j)] = first;
 			if (is_terminal_state(pmap, i, j, first)) {
 				return Point(i, j);
 			}
 			long long ret = minimax(pmap, alpha, beta, false, 1);
-			//printf("(%d %d) : %lld\n", i, j, ret);
+			//printf("(%d %d) : %lld %lld\n", i, j, ret, alpha);
 			if (ret > alpha) {
 				alpha = ret;
 				p.x = i;
 				p.y = j;
 			}
+			if (ret == alpha && p.x == -1)
+				p.x = i, p.y = j;
 			pmap.erase(Point(i, j));
 		}
 	}

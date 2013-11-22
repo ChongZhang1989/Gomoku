@@ -43,9 +43,9 @@ private:
 	};
 	typedef tr1::unordered_map<Point, int, PointHash, PointEqual> PointMap;
 	//typedef map<Point, int> PointMap;
-	const static long long MAX = 0x7ffffffffffffff;
+	const static long long MAX = 0x7fffffffffffffe;
 	const static long long MIN = -0x7ffffffffffffff;
-	const static int max_level = 3;
+	int max_level;
 	const static int direction[4][2];
 	double threshold;
 	int dimension, chain_len, mode;

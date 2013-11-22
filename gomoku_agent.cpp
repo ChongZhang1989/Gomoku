@@ -7,6 +7,7 @@ GomokuAgent::GomokuAgent(int d, int c, double t, int m, bool f)
 	mode = m;
 	first = f;
 	threshold = 0.1;
+	max_level = 4;
 	board.assign(d, vector<char>(d, '.'));
 }
 
@@ -67,6 +68,7 @@ bool GomokuAgent::is_empty(char c)
  */
 void GomokuAgent::my_move(Point &move)
 {
+	if (move.x < 0 || move.y < 0) return;
 	board[move.x][move.y] = first ? 'X' : 'O';
 	rec[Point(move.x, move.y)] = first;
 }
