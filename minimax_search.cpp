@@ -12,13 +12,11 @@ long long GomokuAgent::eval(PointMap &pmap)
 			long long sum = 0;
 			int x = p.x, y = p.y;
 			int len = 0;
-			int dup = 1;
 			int empty_space1 = 0;
 			int empty_space2 = 0;
 			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x += direction[i][0], y += direction[i][1]) {
 				PointMap::iterator tmp = pmap.find(Point(x, y));
 				if (tmp != pmap.end() && tmp->second == flg) {
-					dup++;
 					continue;
 				}
 				if (board[x][y] != (flg ? 'X' : 'O'))
@@ -39,7 +37,6 @@ long long GomokuAgent::eval(PointMap &pmap)
 			for (; x < dimension && x >= 0 && y < dimension && y >= 0; x -= direction[i][0], y -= direction[i][1]) {
 				PointMap::iterator tmp = pmap.find(Point(x, y));
 				if (tmp != pmap.end() && tmp->second == flg) {
-					dup++;
 					continue;
 				}
 				if (board[x][y] != (flg ? 'X' : 'O'))
@@ -178,19 +175,23 @@ Point GomokuAgent::self_action()
 	long long alpha = MIN - 100;
 	long long beta = MAX + 1;
 	Point p(-1, -1);
+	int flg = 1;
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
-			if (is_prune(pmap, i, j)) continue;
 			double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
-			if (time_limit - runtime < threshold) {
+			if (runtime > 0.8 * time_limit && flg) {
 				max_level--;
+				flg = 0;
 				printf("Max level changed from %d to %d\n", max_level + 1, max_level);
-				cout<<"Runtime: "<<runtime<<"s"<<endl;
-				return p;
+				//cout<<"Runtime: "<<runtime<<"s"<<endl;
+				//return p;
+				i = 0, j = 0;
 			}
+			if (is_prune(pmap, i, j)) continue;
 			if (!is_empty(board[i][j])) continue;
 			pmap[Point(i, j)] = first;
 			if (is_terminal_state(pmap, i, j, first)) {
+				if (!flg) max_level++;
 				return Point(i, j);
 			}
 			long long ret = minimax(pmap, alpha, beta, false, 1);
@@ -208,5 +209,6 @@ Point GomokuAgent::self_action()
 	double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
 	cout<<"Runtime: "<<runtime<<"s"<<endl;
 	cout<<p.x<<" "<<p.y<<endl;
+	if (!flg) max_level++;
 	return p;
 }

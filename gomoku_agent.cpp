@@ -6,7 +6,7 @@ GomokuAgent::GomokuAgent(int d, int c, double t, int m, bool f)
 	time_limit = t;
 	mode = m;
 	first = f;
-	threshold = 0.1;
+	threshold = 0.5;
 	max_level = 4;
 	board.assign(d, vector<char>(d, '.'));
 }
