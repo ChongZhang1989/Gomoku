@@ -172,12 +172,15 @@ long long GomokuAgent::minimax(PointMap pmap, long long alpha, long long beta, b
 Point GomokuAgent::self_action()
 {
 	int t1 = clock();
+	if (rec.size() == 0)
+		return Point(dimension / 2, dimension / 2);
 	PointMap pmap;
 	long long alpha = MIN - 100;
 	long long beta = MAX + 1;
 	Point p(-1, -1);
 	for (int i = 0; i < dimension; ++i) {
 		for (int j = 0; j < dimension; ++j) {
+			if (is_prune(pmap, i, j)) continue;
 			double runtime = (clock() - t1) * 1.0 / CLOCKS_PER_SEC;
 			if (time_limit - runtime < threshold) {
 				max_level--;

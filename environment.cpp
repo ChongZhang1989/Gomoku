@@ -26,7 +26,11 @@ void GomokuEnvironment::run()
 		show_board();
 	}
 	show_board();
-	cout<<winner<<endl;
+	if (winner) {
+		printf("The winner is Player%d\n", winner);
+	} else {
+		puts("Draw Game");
+	}
 }
 
 bool GomokuEnvironment::is_terminate(Point p)
